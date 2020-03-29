@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/recommendation/")
 public class RecommendationRESTController {
@@ -49,5 +51,36 @@ public class RecommendationRESTController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @RequestMapping(method = RequestMethod.PUT, path="customer/{customerId}/product/{productId}")
+    public ResponseEntity<?> addPurchase(@PathVariable Long customerId, @PathVariable Long productId) {
+        try {
+            recommendationController.addPurchase(customerId, productId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (CustomerNotFoundException | ProductNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path="customer/{customerId}/product")
+    public ResponseEntity<?> getCustomerPurchases(@PathVariable Long customerId) {
+        try {
+            List<ProductDTO> purchasedProducts = recommendationController.getCustomerPurchases(customerId);
+            return new ResponseEntity<>(purchasedProducts, HttpStatus.OK);
+        } catch (CustomerNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "customer/{customerId}/recommended")
+    public ResponseEntity<?> getRecommendedProducts(@PathVariable Long customerId) {
+        try {
+            List<ProductDTO> recommendedProducts = recommendationController.getRecommendedProducts(customerId);
+            return new ResponseEntity<>(recommendedProducts, HttpStatus.OK);
+        } catch (CustomerNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }

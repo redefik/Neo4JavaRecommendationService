@@ -7,10 +7,12 @@ import it.viglietta.federico.Neo4JavaRecommendationService.entity.Product;
 import it.viglietta.federico.Neo4JavaRecommendationService.repository.CustomerRepository;
 import it.viglietta.federico.Neo4JavaRecommendationService.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,5 +60,42 @@ public class RecommendationController {
         }
     }
 
+    /* Associate a product to a customer that bought it*/
+    public void addPurchase(Long customerId, Long productId) throws CustomerNotFoundException, ProductNotFoundException {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if (!customer.isPresent()) {
+            throw new CustomerNotFoundException();
+        }
+        Optional<Product> product = productRepository.findById(productId);
+        if (!product.isPresent()) {
+            throw new ProductNotFoundException();
+        }
+        Customer foundCustomer = customer.get();
+        Product foundProduct = product.get();
+        foundCustomer.addProduct(foundProduct);
+        customerRepository.save(foundCustomer);
+    }
 
+    public List<ProductDTO> getCustomerPurchases(Long customerId) throws CustomerNotFoundException {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if (!customer.isPresent()) {
+            throw new CustomerNotFoundException();
+        }
+        Customer foundCustomer = customer.get();
+        ModelMapper modelMapper = new ModelMapper();
+        List<Product> products = foundCustomer.getProducts();
+        return modelMapper.map(products, new TypeToken<List<ProductDTO>>(){}.getType());
+
+    }
+
+    /* Retrieves the products purchased by the customers that purchased the same products */
+    public List<ProductDTO> getRecommendedProducts(Long customerId) throws CustomerNotFoundException {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if (!customer.isPresent()) {
+            throw new CustomerNotFoundException();
+        }
+        List<Product> recommendedProducts = productRepository.getProductPurchasedByCustomersThatPurchasedTheSameProducts(customerId);
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(recommendedProducts, new TypeToken<List<ProductDTO>>(){}.getType());
+    }
 }

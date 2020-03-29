@@ -1,14 +1,12 @@
 package it.viglietta.federico.Neo4JavaRecommendationService.entity;
 
 import lombok.Data;
-import lombok.Generated;
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import java.util.ArrayList;
 import java.util.List;
-import static org.neo4j.ogm.annotation.Relationship.OUTGOING;
 
 @Data
 @NodeEntity
@@ -19,6 +17,10 @@ public class Customer {
     private String name;
     private Integer born;
 
-    @Relationship(type = "PURCHASED", direction = OUTGOING)
+    @Relationship(type = "PURCHASED")
     private List<Product> products = new ArrayList<>();
+
+    public void addProduct(Product product) {
+        products.add(product);
+    }
 }
