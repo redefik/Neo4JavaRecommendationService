@@ -14,6 +14,7 @@ public class Customer {
     @Id
     @GeneratedValue
     private Long id;
+    private String externalId;
     private String name;
     private Integer born;
 

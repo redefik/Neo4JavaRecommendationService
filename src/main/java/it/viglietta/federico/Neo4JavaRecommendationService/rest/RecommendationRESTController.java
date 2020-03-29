@@ -5,7 +5,6 @@ import it.viglietta.federico.Neo4JavaRecommendationService.controller.ProductNot
 import it.viglietta.federico.Neo4JavaRecommendationService.controller.RecommendationController;
 import it.viglietta.federico.Neo4JavaRecommendationService.dto.CustomerDTO;
 import it.viglietta.federico.Neo4JavaRecommendationService.dto.ProductDTO;
-import it.viglietta.federico.Neo4JavaRecommendationService.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ public class RecommendationRESTController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path="customer/{customerId}")
-    public ResponseEntity<?> getCustomerById(@PathVariable Long customerId) {
+    public ResponseEntity<?> getCustomerById(@PathVariable String customerId) {
         try {
             CustomerDTO customerDTO = recommendationController.getCustomerById(customerId);
             return new ResponseEntity<>(customerDTO, HttpStatus.OK);
@@ -43,7 +42,7 @@ public class RecommendationRESTController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path="product/{productId}")
-    public ResponseEntity<?> getProductById(@PathVariable Long productId) {
+    public ResponseEntity<?> getProductById(@PathVariable String productId) {
         try {
             ProductDTO productDTO = recommendationController.getProductById(productId);
             return new ResponseEntity<>(productDTO, HttpStatus.OK);
@@ -53,7 +52,7 @@ public class RecommendationRESTController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, path="customer/{customerId}/product/{productId}")
-    public ResponseEntity<?> addPurchase(@PathVariable Long customerId, @PathVariable Long productId) {
+    public ResponseEntity<?> addPurchase(@PathVariable String customerId, @PathVariable String productId) {
         try {
             recommendationController.addPurchase(customerId, productId);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -63,7 +62,7 @@ public class RecommendationRESTController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path="customer/{customerId}/product")
-    public ResponseEntity<?> getCustomerPurchases(@PathVariable Long customerId) {
+    public ResponseEntity<?> getCustomerPurchases(@PathVariable String customerId) {
         try {
             List<ProductDTO> purchasedProducts = recommendationController.getCustomerPurchases(customerId);
             return new ResponseEntity<>(purchasedProducts, HttpStatus.OK);
@@ -73,7 +72,7 @@ public class RecommendationRESTController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "customer/{customerId}/recommended")
-    public ResponseEntity<?> getRecommendedProducts(@PathVariable Long customerId) {
+    public ResponseEntity<?> getRecommendedProducts(@PathVariable String customerId) {
         try {
             List<ProductDTO> recommendedProducts = recommendationController.getRecommendedProducts(customerId);
             return new ResponseEntity<>(recommendedProducts, HttpStatus.OK);

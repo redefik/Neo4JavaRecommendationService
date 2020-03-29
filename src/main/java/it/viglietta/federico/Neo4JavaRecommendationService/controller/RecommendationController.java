@@ -31,8 +31,8 @@ public class RecommendationController {
         return modelMapper.map(createdCustomer, CustomerDTO.class);
     }
 
-    public CustomerDTO getCustomerById(Long id) throws CustomerNotFoundException {
-        Optional<Customer> customer = customerRepository.findById(id);
+    public CustomerDTO getCustomerById(String id) throws CustomerNotFoundException {
+        Optional<Customer> customer = customerRepository.findByExternalId(id);
         if (customer.isPresent()) {
             Customer foundCustomer = customer.get();
             ModelMapper modelMapper = new ModelMapper();
@@ -49,8 +49,8 @@ public class RecommendationController {
         return modelMapper.map(createdProduct, ProductDTO.class);
     }
 
-    public ProductDTO getProductById(Long id) throws ProductNotFoundException {
-        Optional<Product> product = productRepository.findById(id);
+    public ProductDTO getProductById(String id) throws ProductNotFoundException {
+        Optional<Product> product = productRepository.findByExternalId(id);
         if (product.isPresent()) {
             Product foundProduct = product.get();
             ModelMapper modelMapper = new ModelMapper();
@@ -61,12 +61,12 @@ public class RecommendationController {
     }
 
     /* Associate a product to a customer that bought it*/
-    public void addPurchase(Long customerId, Long productId) throws CustomerNotFoundException, ProductNotFoundException {
-        Optional<Customer> customer = customerRepository.findById(customerId);
+    public void addPurchase(String customerId, String productId) throws CustomerNotFoundException, ProductNotFoundException {
+        Optional<Customer> customer = customerRepository.findByExternalId(customerId);
         if (!customer.isPresent()) {
             throw new CustomerNotFoundException();
         }
-        Optional<Product> product = productRepository.findById(productId);
+        Optional<Product> product = productRepository.findByExternalId(productId);
         if (!product.isPresent()) {
             throw new ProductNotFoundException();
         }
@@ -76,8 +76,8 @@ public class RecommendationController {
         customerRepository.save(foundCustomer);
     }
 
-    public List<ProductDTO> getCustomerPurchases(Long customerId) throws CustomerNotFoundException {
-        Optional<Customer> customer = customerRepository.findById(customerId);
+    public List<ProductDTO> getCustomerPurchases(String customerId) throws CustomerNotFoundException {
+        Optional<Customer> customer = customerRepository.findByExternalId(customerId);
         if (!customer.isPresent()) {
             throw new CustomerNotFoundException();
         }
@@ -89,8 +89,8 @@ public class RecommendationController {
     }
 
     /* Retrieves the products purchased by the customers that purchased the same products */
-    public List<ProductDTO> getRecommendedProducts(Long customerId) throws CustomerNotFoundException {
-        Optional<Customer> customer = customerRepository.findById(customerId);
+    public List<ProductDTO> getRecommendedProducts(String customerId) throws CustomerNotFoundException {
+        Optional<Customer> customer = customerRepository.findByExternalId(customerId);
         if (!customer.isPresent()) {
             throw new CustomerNotFoundException();
         }

@@ -13,6 +13,7 @@ public class Product {
     @Id
     @GeneratedValue
     private Long Id;
+    private String externalId;
     private String description;
 
     @Relationship(type = "PURCHASED_BY", direction = INCOMING)
